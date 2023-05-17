@@ -86,7 +86,10 @@ func prepareViolations(violations []services.Violation, extendedResults *Extende
 		switch violation.ViolationType {
 		case "security":
 			cves := convertCves(violation.Cves)
-			applicableValue := getApplicableCveValue(extendedResults, cves[0])
+			applicableValue := ApplicabilityUndeterminedStringValue
+			if len(cves) > 0 {
+				applicableValue = getApplicableCveValue(extendedResults, cves[0])
+			}
 			currSeverity := GetSeverity(violation.Severity, applicableValue)
 			jfrogResearchInfo := convertJfrogResearchInformation(violation.ExtendedInformation)
 			for compIndex := 0; compIndex < len(impactedPackagesNames); compIndex++ {
@@ -205,7 +208,10 @@ func prepareVulnerabilities(vulnerabilities []services.Vulnerability, extendedRe
 			return nil, err
 		}
 		cves := convertCves(vulnerability.Cves)
-		applicableValue := getApplicableCveValue(extendedResults, cves[0])
+		applicableValue := ApplicabilityUndeterminedStringValue
+		if len(cves) > 0 {
+			applicableValue = getApplicableCveValue(extendedResults, cves[0])
+		}
 		currSeverity := GetSeverity(vulnerability.Severity, applicableValue)
 		jfrogResearchInfo := convertJfrogResearchInformation(vulnerability.ExtendedInformation)
 		for compIndex := 0; compIndex < len(impactedPackagesNames); compIndex++ {
